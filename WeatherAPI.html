@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    Enter City: <input type = "text" id="city" placeholder="City">
+    <input type = "submit" id = "submit" value = "Get Temp">
+    <div id = "TableData"></div>
+    <br>
+    Use Current Location: <button id = "current-location"> Go </button>
+    <div id = "TableCurrent"></div>
+</body>
+<script>
+    $("#submit").on('click', function () {
+       $("#TableData").find("table:first-child").remove();
+
+    $.ajax({
+        url:`http://api.openweathermap.org/data/2.5/weather?q=${$("#city").val()}&appid=ee9829482331ae90cd903063d97044f2&units=metric`,
+        type: "get",
+        success: function (obj) {
+        console.log(obj.main.temp);
+        const table = document.createElement("table");
+        const hrow = document.createElement("tr");
+        const CityName = document.createElement("th");
+        const Temperature = document.createElement("th");
+        const Pressure = document.createElement("th");
+        CityName.innerText = "City Name ";
+        Temperature.innerText = "Temperature ";
+        Pressure.innerText = "Pressure";
+        const cityData = document.createElement("td");
+        const tempData = document.createElement("td");
+        const pressureData = document.createElement("td");
+        const row = document.createElement("tr");
+        cityData.innerText = obj.name;
+        tempData.innerText = "" + obj.main.temp;
+        pressureData.innerText = "" + obj.main.pressure;
+        hrow.appendChild(CityName);
+        hrow.appendChild(Temperature);
+        hrow.appendChild(Pressure);
+        row.appendChild(cityData);
+        row.appendChild(tempData);
+        row.appendChild(pressureData);
+        table.appendChild(hrow);
+        table.appendChild(row);
+        document.getElementById("TableData").appendChild(table);
+        }
+    })
+
+    });
+    let lat, long;
+    $(document).ready(function() {
+    navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+    });
+    
+    function successFunction(position)
+    {
+     lat = Math.round(position.coords.latitude);
+     long = Math.round(position.coords.longitude);
+    }
+
+    function errorFunction(position)
+    {
+    alert('Error!');
+    }
+    $("#current-location").on('click', function() {
+    $("#TableCurrent").find("table:first-child").remove();
+    setTimeout(function() {
+    $.ajax({
+    url:`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=ee9829482331ae90cd903063d97044f2&units=metric`,
+    type: "get",
+    success: function (obj) {
+    console.log(obj.main.temp);
+    const table = document.createElement("table");
+    const hrow = document.createElement("tr");
+    const CityName = document.createElement("th");
+    const Temperature = document.createElement("th");
+    const Pressure = document.createElement("th");
+    CityName.innerText = "City Name ";
+    Temperature.innerText = "Temperature ";
+    Pressure.innerText = "Pressure";
+    const cityData = document.createElement("td");
+    const tempData = document.createElement("td");
+    const pressureData = document.createElement("td");
+    const row = document.createElement("tr");
+    cityData.innerText = obj.name;
+    tempData.innerText = "" + obj.main.temp;
+    pressureData.innerText = "" + obj.main.pressure;
+    hrow.appendChild(CityName);
+    hrow.appendChild(Temperature);
+    hrow.appendChild(Pressure);
+    row.appendChild(cityData);
+    row.appendChild(tempData);
+    row.appendChild(pressureData);
+    table.appendChild(hrow);
+    table.appendChild(row);
+    document.getElementById("TableCurrent").appendChild(table);
+    }
+
+    })
+
+    }, 3000);
+
+    })
+
+</script>
+</html>
